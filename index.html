@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>CampusPulse ? Campus Event Hub</title>
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="device-frame-wrapper">
+    <div class="mobile-viewport" id="mobile-viewport">
+
+      <!-- Top Header with Role Switcher (Student vs Operator) -->
+      <header class="mobile-top-bar" id="mobile-top-bar">
+        <div class="top-bar-left">
+          <button class="top-icon-btn back-nav-btn" id="top-back-btn" aria-label="Go Back" style="display: none;">
+            <i class="fa-solid fa-arrow-left"></i>
+          </button>
+          <div class="brand-badge" id="top-brand-badge">
+            <div class="live-dot"></div>
+            <span class="brand-text">Campus<strong>Pulse</strong></span>
+          </div>
+          <h2 class="screen-header-title" id="top-screen-title" style="display: none;">Events</h2>
+        </div>
+        
+        <div class="top-bar-right">
+          <!-- Role Selector Switch -->
+          <div class="role-selector-pill" id="role-selector-box" title="Switch Interface">
+            <button class="role-switch-btn active" id="btn-role-student" data-role="student">
+              <i class="fa-solid fa-user"></i>
+              <span>User</span>
+            </button>
+            <button class="role-switch-btn" id="btn-role-operator" data-role="operator">
+              <i class="fa-solid fa-user-shield"></i>
+              <span>Operator</span>
+            </button>
+          </div>
+
+          <button class="top-icon-btn" id="btn-toggle-theme" title="Toggle Dark/Light Mode" aria-label="Toggle Theme">
+            <i class="fa-solid fa-moon" id="theme-icon"></i>
+          </button>
+        </div>
+      </header>
+
+      <!-- Main Scrollable Screen Surface -->
+      <main class="screen-scroll-surface" id="screen-scroll-surface">
+
+        <!-- ==================== USER INTERFACE ==================== -->
+        <div id="interface-student-wrapper">
+          <!-- SCREEN 1: HOME -->
+          <section class="screen-panel active" id="screen-home">
+            <div class="home-hero-card">
+              <div class="hero-pill"><i class="fa-solid fa-sparkles"></i> Fall Semester 2026</div>
+              <h1 class="hero-title">Discover & Join Campus Life</h1>
+              <p class="hero-sub">Workshops, hackathons, concerts, and tournaments in one place.</p>
+              
+              <div class="hero-metrics-row">
+                <div class="metric-item">
+                  <span class="metric-number" id="metric-events-count">8</span>
+                  <span class="metric-label">Upcoming</span>
+                </div>
+                <div class="metric-divider"></div>
+                <div class="metric-item">
+                  <span class="metric-number highlight-accent" id="metric-passes-count">1</span>
+                  <span class="metric-label">Registered</span>
+                </div>
+                <div class="metric-divider"></div>
+                <div class="metric-item">
+                  <span class="metric-number warning-accent" id="metric-clash-count">0</span>
+                  <span class="metric-label">Clashes</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Twist Feature Showcase Banner -->
+            <div class="clash-guard-banner" id="clash-guard-banner">
+              <div class="guard-badge-icon">
+                <i class="fa-solid fa-shield-halved"></i>
+              </div>
+              <div class="guard-info">
+                <div class="guard-tag">Twist Active</div>
+                <h4>Smart Conflict Guard</h4>
+                <p>Detects time overlaps and warns before booking clashes.</p>
+              </div>
+              <button class="guard-trigger-btn" id="trigger-clash-demo-btn">
+                <span>Try Clash</span>
+                <i class="fa-solid fa-arrow-right"></i>
+              </button>
+            </div>
+
+            <!-- Featured Carousel -->
+            <div class="section-headline">
+              <div class="section-headline-title">
+                <i class="fa-solid fa-fire icon-amber"></i>
+                <h3>Featured Events</h3>
+              </div>
+              <button class="nav-link-btn" id="btn-home-see-all">See All <i class="fa-solid fa-chevron-right"></i></button>
+            </div>
+            <div class="featured-scroll-container" id="home-featured-list"></div>
+
+            <!-- Categories -->
+            <div class="section-headline">
+              <div class="section-headline-title">
+                <i class="fa-solid fa-shapes icon-indigo"></i>
+                <h3>Explore Categories</h3>
+              </div>
+            </div>
+            <div class="category-chips-scroll" id="home-category-chips">
+              <button class="category-chip active" data-cat="all"><i class="fa-solid fa-border-all"></i> All</button>
+              <button class="category-chip" data-cat="Technology"><i class="fa-solid fa-laptop-code"></i> Tech</button>
+              <button class="category-chip" data-cat="Career"><i class="fa-solid fa-briefcase"></i> Career</button>
+              <button class="category-chip" data-cat="Arts & Music"><i class="fa-solid fa-music"></i> Music</button>
+              <button class="category-chip" data-cat="Sports"><i class="fa-solid fa-medal"></i> Sports</button>
+              <button class="category-chip" data-cat="Academic"><i class="fa-solid fa-book-open"></i> Academic</button>
+            </div>
+
+            <!-- Upcoming Events Feed -->
+            <div class="section-headline">
+              <div class="section-headline-title">
+                <i class="fa-regular fa-calendar-days icon-emerald"></i>
+                <h3>Happening Soon</h3>
+              </div>
+            </div>
+            <div class="events-card-list" id="home-upcoming-list"></div>
+          </section>
+
+          <!-- SCREEN 2: EVENT LIST -->
+          <section class="screen-panel" id="screen-events">
+            <div class="search-control-container">
+              <div class="search-input-wrapper">
+                <i class="fa-solid fa-magnifying-glass search-prefix-icon"></i>
+                <input type="text" id="search-events-input" placeholder="Search events, speakers, venues..." autocomplete="off">
+                <button class="search-clear-btn" id="btn-clear-search" style="display: none;"><i class="fa-solid fa-xmark"></i></button>
+              </div>
+            </div>
+
+            <div class="category-chips-scroll list-filter-tabs" id="list-category-tabs">
+              <button class="category-chip active" data-filter="all">All Events</button>
+              <button class="category-chip" data-filter="Technology">Technology</button>
+              <button class="category-chip" data-filter="Career">Career</button>
+              <button class="category-chip" data-filter="Arts & Music">Arts & Music</button>
+              <button class="category-chip" data-filter="Sports">Sports</button>
+              <button class="category-chip" data-filter="Academic">Academic</button>
+            </div>
+
+            <div class="list-meta-info-bar">
+              <span class="events-counter-text" id="events-counter-label">Showing 8 events</span>
+              <div class="sort-select-wrapper">
+                <i class="fa-solid fa-arrow-down-short-wide sort-icon"></i>
+                <select id="sort-events-select" aria-label="Sort Events">
+                  <option value="date-asc">Date: Earliest</option>
+                  <option value="popularity">Most Popular</option>
+                  <option value="title-asc">Name: A to Z</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="schedule-hint-bar">
+              <i class="fa-solid fa-circle-info"></i>
+              <span>Events marked <strong class="conflict-hint-tag">? Clash Alert</strong> overlap with your registered events.</span>
+            </div>
+
+            <div class="events-card-list" id="all-events-container"></div>
+          </section>
+
+          <!-- SCREEN 3: EVENT DETAILS -->
+          <section class="screen-panel" id="screen-details">
+            <div id="details-render-container"></div>
+          </section>
+
+          <!-- SCREEN 4: REGISTRATION FORM -->
+          <section class="screen-panel" id="screen-register">
+            <div class="form-page-layout">
+              <div class="registration-event-preview" id="reg-event-preview-card"></div>
+
+              <!-- Live Conflict Alert in Form -->
+              <div class="form-conflict-alert-card" id="form-conflict-alert-box" style="display: none;">
+                <div class="alert-title-row">
+                  <div class="alert-pulse-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                  <strong>Schedule Conflict Notice</strong>
+                </div>
+                <p class="alert-desc-text">
+                  You already hold a confirmed pass during this time slot. Submitting will trigger a clash warning confirmation.
+                </p>
+                <div class="overlap-preview-card" id="form-overlap-card"></div>
+              </div>
+
+              <!-- Registration Form -->
+              <form id="event-booking-form" class="booking-form-box" novalidate>
+                <input type="hidden" id="form-hidden-event-id" value="">
+
+                <div class="form-field-group">
+                  <label for="input-full-name">Full Name <span class="req-mark">*</span></label>
+                  <div class="field-input-box">
+                    <i class="fa-regular fa-user field-icon"></i>
+                    <input type="text" id="input-full-name" placeholder="Enter your full name" value="Jordan Rivera" required>
+                  </div>
+                  <span class="error-feedback" id="err-full-name"></span>
+                </div>
+
+                <div class="form-field-group">
+                  <label for="input-email">Campus Email <span class="req-mark">*</span></label>
+                  <div class="field-input-box">
+                    <i class="fa-regular fa-envelope field-icon"></i>
+                    <input type="email" id="input-email" placeholder="student@university.edu" value="jordan.rivera@campus.edu" required>
+                  </div>
+                  <span class="error-feedback" id="err-email"></span>
+                </div>
+
+                <div class="form-fields-dual-row">
+                  <div class="form-field-group dual-col">
+                    <label for="input-student-id">Student ID <span class="req-mark">*</span></label>
+                    <div class="field-input-box">
+                      <i class="fa-regular fa-id-card field-icon"></i>
+                      <input type="text" id="input-student-id" placeholder="STU-9921" value="STU-9921" required>
+                    </div>
+                    <span class="error-feedback" id="err-student-id"></span>
+                  </div>
+
+                  <div class="form-field-group dual-col">
+                    <label for="input-ticket-type">Ticket Pass</label>
+                    <div class="field-input-box">
+                      <i class="fa-solid fa-ticket field-icon"></i>
+                      <select id="input-ticket-type">
+                        <option value="Standard Pass">General Pass (Free)</option>
+                        <option value="VIP Pass">VIP Priority Seat</option>
+                        <option value="Student Crew">Crew / Volunteer</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-field-group">
+                  <label for="input-phone-number">Mobile Phone (Optional)</label>
+                  <div class="field-input-box">
+                    <i class="fa-solid fa-phone field-icon"></i>
+                    <input type="tel" id="input-phone-number" placeholder="+1 (555) 000-0000" value="+1 (555) 349-8821">
+                  </div>
+                </div>
+
+                <div class="form-field-group">
+                  <label for="input-special-notes">Dietary or Accessibility Needs</label>
+                  <div class="field-input-box textarea-box">
+                    <i class="fa-regular fa-comment-dots field-icon-top"></i>
+                    <textarea id="input-special-notes" rows="2" placeholder="E.g., Vegetarian meal, wheelchair access, etc."></textarea>
+                  </div>
+                </div>
+
+                <div class="form-checkbox-row">
+                  <label class="styled-checkbox-label">
+                    <input type="checkbox" id="input-consent" checked required>
+                    <span class="checkbox-box-custom"></span>
+                    <span class="checkbox-text">I confirm attendance and agree to campus safety & conduct rules.</span>
+                  </label>
+                  <span class="error-feedback" id="err-consent"></span>
+                </div>
+
+                <div class="form-action-buttons-row">
+                  <button type="button" class="btn-form-secondary" id="btn-form-cancel">Cancel</button>
+                  <button type="submit" class="btn-form-primary" id="btn-form-submit">
+                    <span>Confirm Registration</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </section>
+
+          <!-- SCREEN 5: MY REGISTRATIONS -->
+          <section class="screen-panel" id="screen-my-registrations">
+            <div class="schedule-header-card">
+              <div class="schedule-counter-badge">
+                <span class="counter-big" id="passes-total-count">1</span>
+                <span class="counter-tiny">Passes</span>
+              </div>
+              <div class="schedule-header-details">
+                <h3>My Campus Schedule</h3>
+                <p id="schedule-status-caption">1 registered event on your schedule</p>
+              </div>
+            </div>
+
+            <div class="schedule-global-conflict-notice" id="my-schedule-clash-banner" style="display: none;">
+              <div class="conflict-icon-box"><i class="fa-solid fa-triangle-exclamation"></i></div>
+              <div class="conflict-content-box">
+                <strong>Schedule Overlap Detected!</strong>
+                <p>You have registered for events that take place at the same time. Check individual cards below.</p>
+              </div>
+            </div>
+
+            <div class="my-passes-container" id="my-registrations-container"></div>
+          </section>
+        </div>
+
+        <!-- ==================== OPERATOR INTERFACE ==================== -->
+        <div id="interface-operator-wrapper" style="display: none;">
+          
+          <!-- OPERATOR SCREEN 1: DASHBOARD / OVERVIEW -->
+          <section class="screen-panel" id="screen-op-dashboard">
+            <div class="operator-badge-banner">
+              <div class="op-badge-icon"><i class="fa-solid fa-gauge-high"></i></div>
+              <div>
+                <h3>Operator Control Center</h3>
+                <p>Campus event operations & conflict auditing</p>
+              </div>
+            </div>
+
+            <!-- KPI Cards Grid -->
+            <div class="kpi-metrics-grid">
+              <div class="kpi-card">
+                <div class="kpi-card-header">
+                  <span>Total Events</span>
+                  <i class="fa-regular fa-calendar-check text-indigo"></i>
+                </div>
+                <strong class="kpi-number" id="op-kpi-events">8</strong>
+                <span class="kpi-sub">Across 5 categories</span>
+              </div>
+
+              <div class="kpi-card">
+                <div class="kpi-card-header">
+                  <span>Attendees</span>
+                  <i class="fa-solid fa-users text-emerald"></i>
+                </div>
+                <strong class="kpi-number" id="op-kpi-attendees">1</strong>
+                <span class="kpi-sub">Confirmed passes</span>
+              </div>
+
+              <div class="kpi-card kpi-warning-card">
+                <div class="kpi-card-header">
+                  <span>Active Clashes</span>
+                  <i class="fa-solid fa-triangle-exclamation text-amber"></i>
+                </div>
+                <strong class="kpi-number text-amber" id="op-kpi-clashes">0</strong>
+                <span class="kpi-sub">Schedule conflicts</span>
+              </div>
+
+              <div class="kpi-card">
+                <div class="kpi-card-header">
+                  <span>Avg Occupancy</span>
+                  <i class="fa-solid fa-chart-pie text-cyan"></i>
+                </div>
+                <strong class="kpi-number" id="op-kpi-occupancy">86%</strong>
+                <span class="kpi-sub">Venue capacity</span>
+              </div>
+            </div>
+
+            <!-- Quick Action Bar -->
+            <div class="operator-actions-bar">
+              <button class="btn-op-action-primary" id="btn-op-create-event-top">
+                <i class="fa-solid fa-plus"></i>
+                <span>Add Campus Event</span>
+              </button>
+            </div>
+
+            <!-- Real-Time Conflict Audit Feed -->
+            <div class="section-headline">
+              <div class="section-headline-title">
+                <i class="fa-solid fa-shield-halved text-amber"></i>
+                <h3>Conflict Audit Monitor</h3>
+              </div>
+              <span class="live-pulse-badge">Live</span>
+            </div>
+            <div class="conflict-audit-feed" id="op-conflict-feed"></div>
+
+            <!-- Upcoming Operational Milestones -->
+            <div class="section-headline" style="margin-top: 18px;">
+              <div class="section-headline-title">
+                <i class="fa-solid fa-clock-rotate-left text-indigo"></i>
+                <h3>Event Capacity Radar</h3>
+              </div>
+            </div>
+            <div class="op-event-capacity-list" id="op-capacity-radar"></div>
+          </section>
+
+          <!-- OPERATOR SCREEN 2: MANAGE EVENTS -->
+          <section class="screen-panel" id="screen-op-events">
+            <div class="op-section-header-row">
+              <div>
+                <h3>Campus Events Directory</h3>
+                <p class="section-caption">Manage schedule and capacities</p>
+              </div>
+              <button class="btn-op-action-small" id="btn-op-add-event-list">
+                <i class="fa-solid fa-plus"></i>
+                <span>New Event</span>
+              </button>
+            </div>
+
+            <!-- Events List in Operator View -->
+            <div class="op-events-management-stack" id="op-events-list"></div>
+          </section>
+
+          <!-- OPERATOR SCREEN 3: ATTENDEE ROSTER -->
+          <section class="screen-panel" id="screen-op-attendees">
+            <div class="op-section-header-row">
+              <div>
+                <h3>Student Pass Roster</h3>
+                <p class="section-caption">Check-in students & manage conflicts</p>
+              </div>
+            </div>
+
+            <div class="search-control-container">
+              <div class="search-input-wrapper">
+                <i class="fa-solid fa-magnifying-glass search-prefix-icon"></i>
+                <input type="text" id="op-attendee-search" placeholder="Search by student name, ID or event..." autocomplete="off">
+              </div>
+            </div>
+
+            <div class="op-attendees-stack" id="op-attendees-list"></div>
+          </section>
+
+        </div>
+
+      
+        <!-- ==================== CREATOR SHOWCASE FOOTER ==================== -->
+        <footer class="app-creator-footer" id="app-creator-footer">
+          <div class="creator-card">
+            <div class="creator-avatar-wrap">
+              <img src="prince_bhardwaj.jpg" alt="Prince Bhardwaj" class="creator-avatar-img">
+              <div class="creator-badge-check" title="Verified Developer"><i class="fa-solid fa-check"></i></div>
+            </div>
+            <div class="creator-info">
+              <span class="creator-kicker"><i class="fa-solid fa-code"></i> Created & Engineered By</span>
+              <h3 class="creator-name">Prince Bhardwaj</h3>
+              <p class="creator-bio">Lead Developer & Architect ? CampusPulse Hub</p>
+              <div class="creator-tags">
+                <span class="creator-pill"><i class="fa-solid fa-laptop-code"></i> Full Stack</span>
+                <span class="creator-pill"><i class="fa-solid fa-shield-halved"></i> Clash Guard</span>
+                <span class="creator-pill"><i class="fa-solid fa-mobile-screen"></i> Mobile UI</span>
+              </div>
+            </div>
+          </div>
+          <p class="creator-copyright">? 2026 CampusPulse ? Built with passion by Prince Bhardwaj</p>
+        </footer>
+
+      </main>
+
+      <!-- ==================== DUAL BOTTOM NAVIGATION ==================== -->
+      
+      <!-- Student Bottom Tabs -->
+      <nav class="mobile-bottom-tabs" id="nav-tabs-student">
+        <button class="bottom-tab-item active" data-screen="home" id="tab-btn-home">
+          <div class="tab-icon-holder"><i class="fa-solid fa-house"></i></div>
+          <span class="tab-label">Home</span>
+        </button>
+
+        <button class="bottom-tab-item" data-screen="events" id="tab-btn-events">
+          <div class="tab-icon-holder"><i class="fa-solid fa-compass"></i></div>
+          <span class="tab-label">Events</span>
+        </button>
+
+        <button class="bottom-tab-item" data-screen="my-registrations" id="tab-btn-my-registrations">
+          <div class="tab-icon-holder">
+            <i class="fa-solid fa-ticket"></i>
+            <span class="tab-badge-bubble" id="tab-badge-count" style="display: none;">0</span>
+          </div>
+          <span class="tab-label">My Passes</span>
+        </button>
+      </nav>
+
+      <!-- Operator Bottom Tabs -->
+      <nav class="mobile-bottom-tabs" id="nav-tabs-operator" style="display: none;">
+        <button class="bottom-tab-item active" data-opscreen="op-dashboard" id="tab-btn-op-dashboard">
+          <div class="tab-icon-holder"><i class="fa-solid fa-chart-line"></i></div>
+          <span class="tab-label">Overview</span>
+        </button>
+
+        <button class="bottom-tab-item" data-opscreen="op-events" id="tab-btn-op-events">
+          <div class="tab-icon-holder"><i class="fa-solid fa-list-check"></i></div>
+          <span class="tab-label">Manage Events</span>
+        </button>
+
+        <button class="bottom-tab-item" data-opscreen="op-attendees" id="tab-btn-op-attendees">
+          <div class="tab-icon-holder"><i class="fa-solid fa-users-gear"></i></div>
+          <span class="tab-label">Attendees</span>
+        </button>
+      </nav>
+
+      <!-- ==================== MODAL: OPERATOR ADD EVENT ==================== -->
+      <div class="modal-shade-overlay" id="modal-op-add-event-overlay">
+        <div class="modal-sheet-dialog op-add-event-sheet" id="op-add-event-sheet">
+          <div class="sheet-pull-bar"></div>
+          <button class="ticket-close-btn" id="btn-close-op-event-modal" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+          
+          <div class="modal-title-box">
+            <h3>Add Campus Event</h3>
+            <p>Publish an event and monitor capacity conflicts</p>
+          </div>
+
+          <form id="form-operator-add-event" class="booking-form-box" style="margin-top: 14px;" novalidate>
+            <div class="form-field-group">
+              <label for="op-event-title">Event Title <span class="req-mark">*</span></label>
+              <div class="field-input-box">
+                <i class="fa-solid fa-heading field-icon"></i>
+                <input type="text" id="op-event-title" placeholder="e.g. AI & Robotics Summit 2026" required>
+              </div>
+            </div>
+
+            <div class="form-fields-dual-row">
+              <div class="form-field-group dual-col">
+                <label for="op-event-category">Category</label>
+                <div class="field-input-box">
+                  <i class="fa-solid fa-shapes field-icon"></i>
+                  <select id="op-event-category">
+                    <option value="Technology">Technology</option>
+                    <option value="Career">Career</option>
+                    <option value="Arts & Music">Arts & Music</option>
+                    <option value="Sports">Sports</option>
+                    <option value="Academic">Academic</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-field-group dual-col">
+                <label for="op-event-capacity">Capacity <span class="req-mark">*</span></label>
+                <div class="field-input-box">
+                  <i class="fa-solid fa-users field-icon"></i>
+                  <input type="number" id="op-event-capacity" placeholder="100" min="10" max="1000" value="120" required>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-field-group">
+              <label for="op-event-date">Date <span class="req-mark">*</span></label>
+              <div class="field-input-box">
+                <i class="fa-regular fa-calendar field-icon"></i>
+                <input type="date" id="op-event-date" value="2026-10-24" required>
+              </div>
+            </div>
+
+            <div class="form-fields-dual-row">
+              <div class="form-field-group dual-col">
+                <label for="op-event-start">Start Time <span class="req-mark">*</span></label>
+                <div class="field-input-box">
+                  <i class="fa-regular fa-clock field-icon"></i>
+                  <input type="time" id="op-event-start" value="14:00" required>
+                </div>
+              </div>
+
+              <div class="form-field-group dual-col">
+                <label for="op-event-end">End Time <span class="req-mark">*</span></label>
+                <div class="field-input-box">
+                  <i class="fa-regular fa-clock field-icon"></i>
+                  <input type="time" id="op-event-end" value="16:30" required>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-field-group">
+              <label for="op-event-venue">Venue Location <span class="req-mark">*</span></label>
+              <div class="field-input-box">
+                <i class="fa-solid fa-location-dot field-icon"></i>
+                <input type="text" id="op-event-venue" placeholder="e.g. Innovation Hall, Room 101" value="Innovation Hall, Room 101" required>
+              </div>
+            </div>
+
+            <div class="form-field-group">
+              <label for="op-event-organizer">Organizer Club / Dept <span class="req-mark">*</span></label>
+              <div class="field-input-box">
+                <i class="fa-solid fa-building-columns field-icon"></i>
+                <input type="text" id="op-event-organizer" placeholder="e.g. Student Innovation Guild" value="Student Innovation Guild" required>
+              </div>
+            </div>
+
+            <div class="form-field-group">
+              <label for="op-event-desc">Description</label>
+              <div class="field-input-box textarea-box">
+                <i class="fa-regular fa-comment-dots field-icon-top"></i>
+                <textarea id="op-event-desc" rows="2" placeholder="Event overview and details...">Interactive campus event for student community.</textarea>
+              </div>
+            </div>
+
+            <!-- Operator Schedule Venue Conflict Warning Notice -->
+            <div class="operator-venue-clash-box" id="op-venue-clash-box" style="display: none;">
+              <i class="fa-solid fa-triangle-exclamation"></i>
+              <span id="op-venue-clash-msg">Venue conflict detected with existing event!</span>
+            </div>
+
+            <div class="form-action-buttons-row">
+              <button type="button" class="btn-form-secondary" id="btn-cancel-op-event">Cancel</button>
+              <button type="submit" class="btn-form-primary" id="btn-save-op-event">
+                <i class="fa-solid fa-check"></i>
+                <span>Publish Event</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- ==================== MODAL: CLASH WARNING (THE TWIST) ==================== -->
+      <div class="modal-shade-overlay" id="modal-clash-overlay">
+        <div class="modal-sheet-dialog clash-modal-sheet" id="clash-modal-sheet">
+          <div class="sheet-pull-bar"></div>
+          
+          <div class="clash-modal-headline">
+            <div class="clash-hazard-circle">
+              <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <h2>Schedule Clash Detected!</h2>
+            <p class="clash-headline-sub">
+              You have already registered for an event during this exact time slot.
+            </p>
+          </div>
+
+          <div class="clash-comparison-grid" id="clash-comparison-grid"></div>
+
+          <div class="clash-overlap-duration-chip" id="clash-overlap-chip">
+            <i class="fa-solid fa-clock-rotate-left"></i>
+            <span id="clash-overlap-text">Overlaps by 60 minutes</span>
+          </div>
+
+          <div class="clash-modal-buttons-stack">
+            <button class="btn-clash-override" id="btn-clash-register-anyway">
+              <i class="fa-solid fa-check-double"></i>
+              <span>Register Anyway (Overlap Allowed)</span>
+            </button>
+            <button class="btn-clash-cancel" id="btn-clash-keep-existing">
+              <i class="fa-solid fa-xmark"></i>
+              <span>Keep Current Schedule (Cancel)</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== MODAL: DIGITAL QR TICKET PASS ==================== -->
+      <div class="modal-shade-overlay" id="modal-ticket-overlay">
+        <div class="modal-sheet-dialog ticket-modal-sheet" id="ticket-modal-sheet">
+          <div class="sheet-pull-bar"></div>
+          <button class="ticket-close-btn" id="btn-close-ticket-modal" aria-label="Close Ticket">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+          <div id="ticket-modal-body"></div>
+        </div>
+      </div>
+
+      <!-- Global App Toast Notification Container -->
+      <div class="app-toast-shelf" id="app-toast-shelf"></div>
+
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
