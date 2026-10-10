@@ -147,6 +147,14 @@ function updateUserProfileDisplay() {
   if (regPhone && !regPhone.value && user.phone) regPhone.value = user.phone;
 }
 
+
+window.initAuth = initAuth;
+window.loginWithGoogle = loginWithGoogle;
+window.sendPhoneOtp = sendPhoneOtp;
+window.verifyPhoneOtp = verifyPhoneOtp;
+window.loginAsGuest = loginAsGuest;
+window.logoutUser = logoutUser;
+
 function setupAuthListeners() {
   const btnGoogle = document.getElementById('btn-login-google');
   const btnReqOtp = document.getElementById('btn-request-otp');
@@ -1753,6 +1761,7 @@ function startClock() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  initAuth();
   if (AppState.theme === 'dark') {
     document.documentElement.setAttribute('data-theme', 'dark');
     const themeIcon = document.getElementById('theme-icon');

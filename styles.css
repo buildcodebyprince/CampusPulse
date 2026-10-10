@@ -1722,10 +1722,11 @@ body {
 }
 
 .login-screen-overlay.hidden {
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  transform: scale(0.98);
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  transform: scale(0.98) !important;
+  display: none !important;
 }
 
 .login-card-container {
