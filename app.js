@@ -139,7 +139,8 @@ let CAMPUS_EVENTS = [
 ];
 
 const AppState = {
-  currentRole: 'student', // 'student' | 'operator'
+  currentRole: 'student',
+  isOperatorAuthenticated: false, // 'student' | 'operator'
   activeScreen: 'home',
   activeOpScreen: 'op-dashboard',
   screenHistory: ['home'],
@@ -718,7 +719,71 @@ function renderMyRegistrationsScreen() {
 
 /* Part 3: Operator Interface & System Handlers */
 
-function switchRole(role) {
+function openOperatorAuthModal() {
+  const modal = document.getElementById('modal-operator-auth');
+  const input = document.getElementById('input-operator-pass');
+  const err = document.getElementById('op-auth-error-msg');
+  if (err) err.style.display = 'none';
+  if (input) {
+    input.value = '';
+    input.style.borderColor = 'var(--border-subtle)';
+  }
+  if (modal) {
+    modal.style.display = 'flex';
+    setTimeout(() => {
+      if (input) input.focus();
+    }, 80);
+  }
+}
+
+function closeOperatorAuthModal() {
+  const modal = document.getElementById('modal-operator-auth');
+  if (modal) modal.style.display = 'none';
+  const input = document.getElementById('input-operator-pass');
+  if (input) input.value = '';
+  const err = document.getElementById('op-auth-error-msg');
+  if (err) err.style.display = 'none';
+  if (AppState.currentRole === 'student') {
+    const btnRoleStudent = document.getElementById('btn-role-student');
+    const btnRoleOperator = document.getElementById('btn-role-operator');
+    if (btnRoleStudent) btnRoleStudent.classList.add('active');
+    if (btnRoleOperator) btnRoleOperator.classList.remove('active');
+  }
+}
+
+function handleOperatorLogin() {
+  const input = document.getElementById('input-operator-pass');
+  const err = document.getElementById('op-auth-error-msg');
+  const card = document.getElementById('operator-auth-card');
+  if (!input) return;
+
+  const enteredPassword = input.value.trim();
+  if (enteredPassword === 'prince123') {
+    AppState.isOperatorAuthenticated = true;
+    closeOperatorAuthModal();
+    switchRole('operator', true);
+    showToast('Access Granted', 'Welcome to Operator Control Center', 'success');
+  } else {
+    if (err) {
+      err.textContent = 'Incorrect password! Access denied.';
+      err.style.display = 'block';
+    }
+    input.style.borderColor = '#ef4444';
+    if (card) {
+      card.classList.remove('shake-error');
+      void card.offsetWidth;
+      card.classList.add('shake-error');
+    }
+    input.focus();
+    input.select();
+  }
+}
+
+function switchRole(role, force = false) {
+  if (role === 'operator' && !force && !AppState.isOperatorAuthenticated) {
+    openOperatorAuthModal();
+    return;
+  }
   AppState.currentRole = role;
   const isStudent = role === 'student';
 
@@ -1250,6 +1315,44 @@ function resetFormValidationErrors() {
 }
 
 function setupEventListeners() {
+  // Operator Authentication Modal Listeners
+  const formOpAuth = document.getElementById('form-operator-auth');
+  const btnCloseOpAuth = document.getElementById('btn-close-operator-auth');
+  const btnCancelOpAuth = document.getElementById('btn-cancel-operator-auth');
+  const btnTogglePassVis = document.getElementById('btn-toggle-operator-pass-vis');
+  const inputOpPass = document.getElementById('input-operator-pass');
+  const btnLockOperator = document.getElementById('btn-lock-operator');
+
+  if (formOpAuth) {
+    formOpAuth.addEventListener('submit', (e) => {
+      e.preventDefault();
+      handleOperatorLogin();
+    });
+  }
+  if (btnCloseOpAuth) {
+    btnCloseOpAuth.addEventListener('click', closeOperatorAuthModal);
+  }
+  if (btnCancelOpAuth) {
+    btnCancelOpAuth.addEventListener('click', closeOperatorAuthModal);
+  }
+  if (btnTogglePassVis && inputOpPass) {
+    btnTogglePassVis.addEventListener('click', () => {
+      const isPass = inputOpPass.type === 'password';
+      inputOpPass.type = isPass ? 'text' : 'password';
+      const eyeIcon = document.getElementById('icon-operator-eye');
+      if (eyeIcon) {
+        eyeIcon.className = isPass ? 'fa-regular fa-eye-slash' : 'fa-regular fa-eye';
+      }
+    });
+  }
+  if (btnLockOperator) {
+    btnLockOperator.addEventListener('click', () => {
+      AppState.isOperatorAuthenticated = false;
+      switchRole('student');
+      showToast('Session Locked', 'Operator portal locked.', 'info');
+    });
+  }
+
   // Role selector switches
   const btnRoleStudent = document.getElementById('btn-role-student');
   const btnRoleOperator = document.getElementById('btn-role-operator');

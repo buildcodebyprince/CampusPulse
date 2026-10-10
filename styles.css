@@ -1686,3 +1686,18 @@ body {
     padding-bottom: 24px;
   }
 }
+
+/* Operator Authentication Modal */
+@keyframes shakeAuth {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-8px); }
+  40%, 80% { transform: translateX(8px); }
+}
+
+.operator-auth-card.shake-error {
+  animation: shakeAuth 0.38s ease-in-out;
+}
+
+.btn-op-lock:hover {
+  background: rgba(239, 68, 68, 0.25) !important;
+}
