@@ -1471,3 +1471,32 @@ document.addEventListener('DOMContentLoaded', () => {
   navigateTo('home');
   startClock();
 });
+
+window.markAttended = function(regId) {
+  const reg = AppState.myRegistrations.find(r => r.id === regId);
+  if (reg) {
+    reg.attended = true;
+    saveState();
+    if (typeof renderOperatorAttendees === 'function') {
+      renderOperatorAttendees();
+    }
+    if (typeof showToast === 'function') {
+      showToast("Attendance marked present", "success");
+    }
+  }
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+  const btnSettings = document.getElementById('btn-settings');
+  const modalSettings = document.getElementById('modal-settings');
+  const btnCloseSettings = document.getElementById('btn-close-settings');
+  
+  if (btnSettings && modalSettings) {
+    btnSettings.addEventListener('click', () => {
+      modalSettings.style.display = 'flex';
+    });
+    btnCloseSettings.addEventListener('click', () => {
+      modalSettings.style.display = 'none';
+    });
+  }
+});
