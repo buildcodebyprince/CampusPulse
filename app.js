@@ -1,3 +1,191 @@
+
+/* Part 0: CampusPulse User Authentication (Google & Phone) */
+
+function initAuth() {
+  const savedUser = localStorage.getItem('campuspulse_user');
+  if (savedUser) {
+    try {
+      AppState.currentUser = JSON.parse(savedUser);
+    } catch (e) {
+      AppState.currentUser = null;
+    }
+  }
+
+  const overlay = document.getElementById('login-screen-overlay');
+  if (AppState.currentUser) {
+    if (overlay) overlay.classList.add('hidden');
+    updateUserProfileDisplay();
+  } else {
+    if (overlay) overlay.classList.remove('hidden');
+  }
+
+  setupAuthListeners();
+}
+
+function loginWithGoogle() {
+  const overlay = document.getElementById('login-screen-overlay');
+  const googleBtn = document.getElementById('btn-login-google');
+  if (googleBtn) {
+    googleBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Connecting with Google...';
+  }
+
+  setTimeout(() => {
+    const user = {
+      name: 'Prince Bhardwaj',
+      email: 'prince.bhardwaj@campus.edu',
+      phone: '+91 9685504121',
+      method: 'Google',
+      avatar: 'P'
+    };
+    AppState.currentUser = user;
+    localStorage.setItem('campuspulse_user', JSON.stringify(user));
+    if (overlay) overlay.classList.add('hidden');
+    if (googleBtn) {
+      googleBtn.innerHTML = `
+        <svg class="google-svg-icon" viewBox="0 0 24 24" width="20" height="20">
+          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+        </svg>
+        <span class="btn-text">Continue with Google</span>
+      `;
+    }
+    updateUserProfileDisplay();
+    showToast('Welcome Back, Prince!', 'Signed in successfully via Google.', 'success');
+  }, 700);
+}
+
+function sendPhoneOtp() {
+  const phoneInput = document.getElementById('input-login-phone');
+  const stepNumber = document.getElementById('phone-login-step-number');
+  const stepOtp = document.getElementById('phone-login-step-otp');
+  const displayPhone = document.getElementById('display-otp-phone');
+  const val = (phoneInput ? phoneInput.value.trim() : '') || '9685504121';
+
+  if (val.length < 10) {
+    showToast('Invalid Phone Number', 'Please enter a valid 10-digit mobile number', 'warning');
+    return;
+  }
+
+  if (displayPhone) displayPhone.textContent = `+91 ${val}`;
+  if (stepNumber) stepNumber.style.display = 'none';
+  if (stepOtp) stepOtp.style.display = 'flex';
+  showToast('OTP Sent', `Verification code sent to +91 ${val}`, 'info');
+}
+
+function verifyPhoneOtp() {
+  const phoneInput = document.getElementById('input-login-phone');
+  const val = (phoneInput ? phoneInput.value.trim() : '') || '9685504121';
+  const overlay = document.getElementById('login-screen-overlay');
+
+  const user = {
+    name: 'Student (+91 ' + val.slice(-4) + ')',
+    phone: '+91 ' + val,
+    email: 'student' + val.slice(-4) + '@campus.edu',
+    method: 'Phone OTP',
+    avatar: 'S'
+  };
+
+  AppState.currentUser = user;
+  localStorage.setItem('campuspulse_user', JSON.stringify(user));
+  if (overlay) overlay.classList.add('hidden');
+  updateUserProfileDisplay();
+  showToast('Verified!', 'Logged in successfully with phone.', 'success');
+}
+
+function loginAsGuest() {
+  const overlay = document.getElementById('login-screen-overlay');
+  const user = {
+    name: 'Campus Guest',
+    email: 'guest@campus.edu',
+    phone: '+91 9685504121',
+    method: 'Guest',
+    avatar: 'G'
+  };
+  AppState.currentUser = user;
+  if (overlay) overlay.classList.add('hidden');
+  updateUserProfileDisplay();
+  showToast('Guest Session', 'Browsing CampusPulse as Guest.', 'info');
+}
+
+function logoutUser() {
+  AppState.currentUser = null;
+  localStorage.removeItem('campuspulse_user');
+  const overlay = document.getElementById('login-screen-overlay');
+  const modalSettings = document.getElementById('modal-settings');
+  const stepNumber = document.getElementById('phone-login-step-number');
+  const stepOtp = document.getElementById('phone-login-step-otp');
+
+  if (modalSettings) modalSettings.style.display = 'none';
+  if (stepNumber) stepNumber.style.display = 'flex';
+  if (stepOtp) stepOtp.style.display = 'none';
+  if (overlay) overlay.classList.remove('hidden');
+
+  showToast('Logged Out', 'You have been safely signed out.', 'info');
+}
+
+function updateUserProfileDisplay() {
+  const user = AppState.currentUser;
+  if (!user) return;
+
+  const nameEl = document.getElementById('settings-user-name');
+  const contactEl = document.getElementById('display-otp-phone');
+  const userContactEl = document.getElementById('settings-user-contact');
+  const avatarEl = document.getElementById('settings-user-avatar');
+
+  if (nameEl) nameEl.textContent = user.name;
+  if (userContactEl) userContactEl.textContent = `${user.email || user.phone} (${user.method})`;
+  if (avatarEl) avatarEl.textContent = user.avatar || user.name.charAt(0).toUpperCase();
+
+  // Pre-fill registration forms
+  const regName = document.getElementById('reg-fullname');
+  const regEmail = document.getElementById('reg-email');
+  const regPhone = document.getElementById('reg-phone');
+  if (regName && !regName.value) regName.value = user.name;
+  if (regEmail && !regEmail.value && user.email) regEmail.value = user.email;
+  if (regPhone && !regPhone.value && user.phone) regPhone.value = user.phone;
+}
+
+function setupAuthListeners() {
+  const btnGoogle = document.getElementById('btn-login-google');
+  const btnReqOtp = document.getElementById('btn-request-otp');
+  const btnVerifyOtp = document.getElementById('btn-verify-otp');
+  const btnBackPhone = document.getElementById('btn-back-to-phone');
+  const btnSkipGuest = document.getElementById('btn-skip-guest');
+  const btnLogout = document.getElementById('btn-user-logout');
+  const btnCloseSettingsX = document.getElementById('btn-close-settings-x');
+  const modalSettings = document.getElementById('modal-settings');
+
+  if (btnGoogle) btnGoogle.addEventListener('click', loginWithGoogle);
+  if (btnReqOtp) btnReqOtp.addEventListener('click', sendPhoneOtp);
+  if (btnVerifyOtp) btnVerifyOtp.addEventListener('click', verifyPhoneOtp);
+  if (btnBackPhone) {
+    btnBackPhone.addEventListener('click', () => {
+      document.getElementById('phone-login-step-number').style.display = 'flex';
+      document.getElementById('phone-login-step-otp').style.display = 'none';
+    });
+  }
+  if (btnSkipGuest) btnSkipGuest.addEventListener('click', loginAsGuest);
+  if (btnLogout) btnLogout.addEventListener('click', logoutUser);
+  if (btnCloseSettingsX && modalSettings) {
+    btnCloseSettingsX.addEventListener('click', () => modalSettings.style.display = 'none');
+  }
+
+  // Auto tab through OTP fields
+  document.querySelectorAll('.otp-digit').forEach((input, idx, all) => {
+    input.addEventListener('keyup', (e) => {
+      if (e.key >= '0' && e.key <= '9') {
+        if (idx < all.length - 1) all[idx + 1].focus();
+      } else if (e.key === 'Backspace') {
+        if (idx > 0) all[idx - 1].focus();
+      } else if (e.key === 'Enter') {
+        verifyPhoneOtp();
+      }
+    });
+  });
+}
+
 /* CampusPulse Event Hub ? Complete Dual-Interface JavaScript Part 1 */
 let CAMPUS_EVENTS = [
   {
@@ -140,6 +328,7 @@ let CAMPUS_EVENTS = [
 
 const AppState = {
   currentRole: 'student',
+  currentUser: null,
   isOperatorAuthenticated: false, // 'student' | 'operator'
   activeScreen: 'home',
   activeOpScreen: 'op-dashboard',

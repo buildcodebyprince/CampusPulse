@@ -13,6 +13,80 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <!-- ==================== LOGIN SCREEN OVERLAY ==================== -->
+  <div class="login-screen-overlay" id="login-screen-overlay">
+    <div class="login-card-container">
+      <div class="login-brand-head">
+        <div class="login-logo-pill">
+          <div class="live-dot"></div>
+          <span>Campus<strong>Pulse</strong></span>
+        </div>
+        <span class="campus-edition-tag"><i class="fa-solid fa-graduation-cap"></i> Campus Hub 2026</span>
+      </div>
+
+      <h1 class="login-main-title">Welcome to CampusPulse</h1>
+      <p class="login-main-sub">Discover, RSVP & attend events seamlessly with smart schedule clash detection.</p>
+
+      <!-- Google Sign In -->
+      <button class="btn-google-auth" id="btn-login-google" type="button">
+        <svg class="google-svg-icon" viewBox="0 0 24 24" width="20" height="20">
+          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+        </svg>
+        <span class="btn-text">Continue with Google</span>
+      </button>
+
+      <div class="auth-separator">
+        <span>or sign in with phone</span>
+      </div>
+
+      <!-- Phone Number Login Form -->
+      <div id="phone-login-step-number" class="phone-auth-box">
+        <div class="phone-input-group">
+          <span class="phone-prefix"><i class="fa-solid fa-flag"></i> +91</span>
+          <input type="tel" id="input-login-phone" placeholder="Enter 10-digit mobile" maxlength="10" value="9685504121" autocomplete="tel">
+        </div>
+        <button class="btn-phone-otp" id="btn-request-otp" type="button">
+          <i class="fa-solid fa-paper-plane"></i>
+          <span>Send OTP</span>
+        </button>
+      </div>
+
+      <!-- OTP Verification Step -->
+      <div id="phone-login-step-otp" class="phone-auth-box" style="display: none;">
+        <div class="otp-notice">
+          <span>OTP sent to <strong id="display-otp-phone">+91 9685504121</strong></span>
+          <span class="otp-hint-badge">Demo OTP: <strong>1234</strong></span>
+        </div>
+        <div class="otp-input-row">
+          <input type="text" class="otp-digit" maxlength="1" id="otp-1" value="1" autocomplete="off">
+          <input type="text" class="otp-digit" maxlength="1" id="otp-2" value="2" autocomplete="off">
+          <input type="text" class="otp-digit" maxlength="1" id="otp-3" value="3" autocomplete="off">
+          <input type="text" class="otp-digit" maxlength="1" id="otp-4" value="4" autocomplete="off">
+        </div>
+        <div class="otp-action-row">
+          <button type="button" class="btn-otp-back" id="btn-back-to-phone">
+            <i class="fa-solid fa-arrow-left"></i> Change
+          </button>
+          <button type="button" class="btn-verify-otp" id="btn-verify-otp">
+            <i class="fa-solid fa-check"></i> Verify & Enter
+          </button>
+        </div>
+      </div>
+
+      <div class="login-footer-links">
+        <button type="button" class="btn-skip-login" id="btn-skip-guest">
+          <i class="fa-solid fa-user-ninja"></i> Continue as Campus Guest
+        </button>
+        <div class="login-safe-badge">
+          <i class="fa-solid fa-shield-halved"></i> 256-bit Student Encrypted
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="device-frame-wrapper">
     <div class="mobile-viewport" id="mobile-viewport">
 
@@ -684,17 +758,36 @@
       </div>
 
       <!-- ==================== MODAL: SETTINGS ==================== -->
-      <div class="modal-shade-overlay" id="modal-settings" style="display:none; position:absolute; top:0;left:0;right:0;bottom:0; z-index:999; background:rgba(0,0,0,0.5); align-items:center; justify-content:center;">
-        <div style="background:var(--bg-card); padding:24px; border-radius:var(--radius-lg); width:90%; max-width:400px; position:relative;">
-          <h3 style="margin-bottom:16px;">Settings</h3>
-          <div style="margin-bottom:16px; display:flex; align-items:center; gap:12px;">
-            <i class="fa-solid fa-phone text-primary" style="font-size:24px;"></i>
+      <div class="modal-shade-overlay" id="modal-settings" style="display:none; position:fixed; top:0;left:0;right:0;bottom:0; z-index:999; background:rgba(0,0,0,0.6); backdrop-filter:blur(5px); align-items:center; justify-content:center;">
+        <div style="background:var(--bg-card); border:1px solid var(--border-subtle); box-shadow:0 20px 45px rgba(0,0,0,0.4); padding:26px; border-radius:20px; width:90%; max-width:400px; position:relative;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px;">
+            <h3 style="margin:0; font-size:18px; font-weight:800; color:var(--text-main);">Settings & Account</h3>
+            <button id="btn-close-settings-x" style="background:transparent; border:none; color:var(--text-secondary); cursor:pointer; font-size:16px;"><i class="fa-solid fa-xmark"></i></button>
+          </div>
+
+          <!-- Current Logged in User Profile Card -->
+          <div id="settings-user-profile-box" style="background:var(--bg-elevated); border:1px solid var(--border-subtle); border-radius:14px; padding:14px; margin-bottom:18px; display:flex; align-items:center; gap:12px;">
+            <div id="settings-user-avatar" style="width:44px; height:44px; border-radius:50%; background:linear-gradient(135deg, var(--primary), var(--secondary)); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:16px; flex-shrink:0;">
+              U
+            </div>
+            <div style="flex:1; min-width:0;">
+              <div id="settings-user-name" style="font-weight:700; font-size:14px; color:var(--text-main); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Prince Bhardwaj</div>
+              <div id="settings-user-contact" style="font-size:12px; color:var(--text-secondary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Signed in via Google</div>
+            </div>
+            <button id="btn-user-logout" title="Sign Out" style="background:rgba(239,68,68,0.12); border:1px solid rgba(239,68,68,0.3); color:#ef4444; padding:6px 10px; border-radius:8px; cursor:pointer; font-size:11px; font-weight:700; display:flex; align-items:center; gap:4px;">
+              <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+            </button>
+          </div>
+
+          <div style="background:var(--bg-elevated); border:1px solid var(--border-subtle); border-radius:14px; padding:14px; margin-bottom:20px; display:flex; align-items:center; gap:12px;">
+            <i class="fa-solid fa-phone" style="font-size:20px; color:var(--emerald);"></i>
             <div>
-              <div style="font-weight:600;">Contact Support</div>
-              <a href="tel:+919685504121" style="color:var(--primary); text-decoration:none;">+91 9685504121</a>
+              <div style="font-weight:600; font-size:13px; color:var(--text-main);">Contact Support</div>
+              <a href="tel:+919685504121" style="color:var(--primary); font-size:13px; font-weight:700; text-decoration:none;">+91 9685504121</a>
             </div>
           </div>
-          <button id="btn-close-settings" class="btn-form-secondary" style="width:100%;">Close</button>
+
+          <button id="btn-close-settings" class="btn-form-secondary" style="width:100%; padding:10px; border-radius:10px; font-weight:700;">Close</button>
         </div>
       </div>
 
